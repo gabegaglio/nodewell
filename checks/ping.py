@@ -25,15 +25,8 @@ def check_host(host):
     }
     
 def check_hosts(hosts):
-    # create empty lists for ersults
-    results = []
-
-    # loop through hosts
+    # generator: yield each result as it's pinged
     for host in hosts:
-        # call check_host
-        result = check_host(host)
-        results.append(result)
-    # return all results
-    return results
+        yield check_host(host) # yield is like return but live
 
 

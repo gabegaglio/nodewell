@@ -164,3 +164,29 @@ and gathers:
 
 Save the results. This mirrors what network/systems engineers actually automate.
 Defer until the foundation milestones are done.
+
+## 9. Storage strategy: YAML for config, SQLite for collected data
+
+Rule of thumb: **config a human writes → file (YAML); data the program generates
+and accumulates → database (SQLite).**
+
+**Keep YAML** for the inventory/config (`hosts`, `services`, `docker_containers`).
+It's human-editable, supports comments, handles nesting, and diffs cleanly in git.
+It's the right tool for "what my infrastructure is." The whole file is loaded,
+mutated, and rewritten — fine at this scale.
+
+**Reach for SQLite** when `collect` / `report` arrive (items #5 and #8). That data
+is fundamentally different — many timestamped records ("what my infrastructure has
+been doing over time"), which you'll want to query (e.g. "uptime for pihole over
+the last week"). Stretching YAML to hold growing time-series data gets painful;
+a database is built for append + query. SQLite is in the Python standard library
+(`sqlite3`), so it needs no extra dependency.
+
+Signals it's time to add a database:
+- Hundreds+ of records, where rewriting a whole file per change is clumsy.
+- You need queries/filtering (`WHERE type = 'dns'`) instead of loading all and
+  filtering in Python.
+- You're storing history/time-series from `collect`.
+
+It's normal for the tool to use **both**: YAML for configuration, SQLite for
+collected/historical data.
