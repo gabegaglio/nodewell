@@ -1,50 +1,49 @@
-import shutil
-from pathlib import Path
-
-import yaml
-
-CONFIG_FILE = Path("config.yaml")
-EXAMPLE_FILE = Path("config.yaml.example")
-
-
-def ensure_config():
-    if CONFIG_FILE.exists():
-        return
-
-    if not EXAMPLE_FILE.exists():
-        print(f"Missing {EXAMPLE_FILE} - cannot create config")
-        raise SystemExit(1)
-
-    shutil.copy(EXAMPLE_FILE, CONFIG_FILE)
-    print("Created config.yaml - edit as needed")
-    raise SystemExit(0)
-
-
-def load_config():
-    with CONFIG_FILE.open("r") as file:
-        config = yaml.safe_load(file)
-
-    return config
-
-
-def show_inventory(config):
-    hosts = config.get("hosts", [])
-
-    print("NODEWELL INVENTORY")
-    print("-------------------")
-
-    for host in hosts:
-        name = host.get("name")
-        ip = host.get("ip")
-
-        print(f"{name:<15} {ip}")
-
+from commands import hosts, inventory, ping
+from utils import config
+import argparse
 
 def main():
-    ensure_config()
-    config = load_config()
-    show_inventory(config)
+    # make sure conf loads and is there
+    config.ensure()
+    # this initiates config
+    conf = config.load()
 
+    # 
+    parser = argparse.ArgumentParser(prog="nodewell")
+    subparsers = parser.add_subparsers(dest="command")
+
+    # simple, one off commands
+    subparsers.add_parser("inventory")
+    subparsers.add_parser("ping")
+
+    # host command, with own sub commands
+    host_parser = subparsers.add_parser("host")
+    host_sub = host_parser.add_subparsers(dest="host_command")
+
+    add_p = host_sub.add_parser("add")
+    add_p.add_argument("--name", required=True)
+    add_p.add_argument("--ip", required=True)
+
+    del_p = host_sub.add_parser("delete")
+    del_p.add_argument("--name", required=True)
+
+    edit_p = host_sub.add_parser("edit")
+    edit_p.add_argument("--name", required=True)
+    edit_p.add_argument("--ip", required=True)
+
+    args = parser.parse_args()
+
+    if args.command == "inventory":
+        inventory.run(conf)
+    elif args.command == "ping":
+        ping.run(conf)
+    elif args.command == "host":
+        if args.host_command == "add":
+            hosts.add(conf, args.name, args.ip)
+        elif args.host_command == "delete":
+            hosts.delete(conf, args.name)
+        elif args.host_command == "edit":
+            hosts.edit(conf, args.name, args.ip)
 
 if __name__ == "__main__":
     main()
