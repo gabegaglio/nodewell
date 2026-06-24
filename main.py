@@ -5,7 +5,7 @@ import argparse
 def main():
     # make sure conf loads and is there
     config.ensure()
-    # this initiates config
+    # this initiates config, passed into each commands run function
     conf = config.load()
 
     parser = argparse.ArgumentParser(prog="nodewell")
@@ -36,7 +36,8 @@ def main():
     if args.command == "inventory":
         inventory_cmd.run(conf)
     elif args.command == "ping":
-        ping_cmd.run(conf)
+        print_host = False
+        ping_cmd.run(conf, print_host)
     elif args.command == "report":
         report_cmd.run(conf)
     elif args.command == "host":

@@ -4,7 +4,7 @@ from checks import ping, report
 def run(conf):
 
     try:
-        results = ping.check_hosts(conf.get("hosts", []))
+        results = ping.check_hosts(conf.get("hosts", []), print_host=True)
    
         content, file_ts = report.generate_report(results)
 

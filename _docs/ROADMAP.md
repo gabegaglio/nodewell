@@ -13,9 +13,9 @@ for container / infrastructure monitoring.
 Get these working cleanly before touching anything else. Inventory → Ping →
 Rich Tables is the foundation everything else builds on.
 
-- [ ] **Rich tables** — render inventory/ping output with `rich` (colored UP/DOWN)
-- [ ] **Reports** — `nodewell report` writes timestamped output files
-- [ ] **Services** — service status checks
+- [x] **Rich tables** — render inventory/ping output with `rich` (colored UP/DOWN)
+- [x] **Reports** — `nodewell report` writes timestamped output files
+- [ ] **Services** — check if services (HTTP, DNS, SSH) are reachable on expected ports
 - [ ] **Status** — aggregate command that runs everything
 
 **Not yet:** Docker, SSH collection, and web UIs. Don't start these until the
@@ -61,6 +61,7 @@ def run(config):
 Validate `config.yaml` before doing any work. Fail early with clear messages.
 
 Check:
+
 - Does `config.yaml` exist?
 - Does every host have a `name`?
 - Does every host have an `ip`?
@@ -183,9 +184,10 @@ a database is built for append + query. SQLite is in the Python standard library
 (`sqlite3`), so it needs no extra dependency.
 
 Signals it's time to add a database:
+
 - Hundreds+ of records, where rewriting a whole file per change is clumsy.
 - You need queries/filtering (`WHERE type = 'dns'`) instead of loading all and
-  filtering in Python.
+filtering in Python.
 - You're storing history/time-series from `collect`.
 
 It's normal for the tool to use **both**: YAML for configuration, SQLite for

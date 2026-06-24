@@ -3,12 +3,13 @@ import platform
 
 platform_flag = "-n" if platform.system() == "Windows" else "-c"
 
-def check_host(host):
+def check_host(host, print_host=False):
 
     # get name from host
     name = host.get("name")
 
-    print(f"Pinging {name}...")
+    if print_host:
+        print(f"Pinging {name}...")
 
     # get ip from host
     ip = host.get("ip")
@@ -26,9 +27,7 @@ def check_host(host):
         "status": status
     }
     
-def check_hosts(hosts):
+def check_hosts(hosts, print_host=False):
     # generator: yield each result as it's pinged
     for host in hosts:
-        yield check_host(host) # yield is like return but live
-
-
+        yield check_host(host, print_host)
