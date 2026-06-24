@@ -8,11 +8,13 @@ def check_host(host):
     # get name from host
     name = host.get("name")
 
+    print(f"Pinging {name}...")
+
     # get ip from host
     ip = host.get("ip")
     # run ping
     result = subprocess.run(["ping", platform_flag, "1", ip], capture_output=True, text=True)
-    # determine up/down
+    # determine if up/down
     if result.returncode == 0:
         status = "UP"
     else:

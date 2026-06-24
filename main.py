@@ -1,4 +1,4 @@
-from commands import hosts, inventory, ping
+from commands import hosts_cmd, inventory_cmd, ping_cmd, report_cmd
 from utils import config
 import argparse
 
@@ -8,13 +8,13 @@ def main():
     # this initiates config
     conf = config.load()
 
-    # 
     parser = argparse.ArgumentParser(prog="nodewell")
     subparsers = parser.add_subparsers(dest="command")
 
     # simple, one off commands
     subparsers.add_parser("inventory")
     subparsers.add_parser("ping")
+    subparsers.add_parser("report")
 
     # host command, with own sub commands
     host_parser = subparsers.add_parser("host")
@@ -34,16 +34,18 @@ def main():
     args = parser.parse_args()
 
     if args.command == "inventory":
-        inventory.run(conf)
+        inventory_cmd.run(conf)
     elif args.command == "ping":
-        ping.run(conf)
+        ping_cmd.run(conf)
+    elif args.command == "report":
+        report_cmd.run(conf)
     elif args.command == "host":
         if args.host_command == "add":
-            hosts.add(conf, args.name, args.ip)
+            hosts_cmd.add(conf, args.name, args.ip)
         elif args.host_command == "delete":
-            hosts.delete(conf, args.name)
+            hosts_cmd.delete(conf, args.name)
         elif args.host_command == "edit":
-            hosts.edit(conf, args.name, args.ip)
+            hosts_cmd.edit(conf, args.name, args.ip)
 
 if __name__ == "__main__":
     main()

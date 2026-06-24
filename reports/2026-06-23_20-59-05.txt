@@ -1,0 +1,9 @@
+2026-06-23 20:59:05
+Gateway (192.168.1.1): UP
+Obsidian (192.168.1.20): UP
+Pihole (192.168.1.30): UP
+Splunk (192.168.1.70): UP
+Nousena (10.10.20.10): DOWN
+MC-Vanilla (10.10.20.11): DOWN
+MC-Modded (10.10.20.13): DOWN
+Immich (10.10.20.40): DOWN

@@ -21,3 +21,14 @@ def delete(conf, name):
     hosts.remove(target)
     config.save(conf)
     print(f"Deleted host '{name}'")
+
+def edit(conf, name, ip):
+    hosts = conf.get("hosts", [])
+    target = next((h for h in hosts if h.get("name") == name), None)
+    if target is None:
+        print(f"Host '{name}' not found")
+        return
+
+    target["ip"] = ip
+    config.save(conf)
+    print(f"Updated host '{name}' ({ip})")
